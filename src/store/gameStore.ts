@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { GameState } from "@/lib/types";
-import { STAR_TARGET } from "@/lib/constants";
+import { STAR_TARGET, MAX_LIVES } from "@/lib/constants";
 
 type Direction = -1 | 0 | 1;
 
@@ -23,7 +23,7 @@ export const useGameStore = create<GameStore>((set) => ({
   crabX: 0,
   inputDirection: 0,
   starsCollected: 0,
-  lives: 3,
+  lives: MAX_LIVES,
   gameState: "playing",
   setInputDirection: (dir) => set({ inputDirection: dir }),
   setCrabPosition: (x) => set({ crabX: x }),
@@ -55,5 +55,5 @@ export const useGameStore = create<GameStore>((set) => ({
   },
   setGameState: (gameState) => set({ gameState }),
   reset: () =>
-    set({ crabX: 0, inputDirection: 0, starsCollected: 0, lives: 3, gameState: "playing" }),
+    set({ crabX: 0, inputDirection: 0, starsCollected: 0, lives: MAX_LIVES, gameState: "playing" }),
 }));
