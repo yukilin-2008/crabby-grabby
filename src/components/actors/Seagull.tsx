@@ -45,19 +45,21 @@ export function Seagull() {
     } else {
       mesh.position.y -= delta * 4;
       mesh.position.x += (targetX - mesh.position.x) * delta * 2;
-      if (mesh.position.y <= -1.5) {
-        mesh.position.y = 2.5;
-        setMode("patrol");
-        setCooldown(
-          SEAGULL_SWEEP_INTERVAL[0] + Math.random() * (SEAGULL_SWEEP_INTERVAL[1] - SEAGULL_SWEEP_INTERVAL[0])
-        );
-      }
     }
 
     const crabY = -2.5;
     const distance = Math.hypot(mesh.position.x - crabX, mesh.position.y - crabY);
     if (distance < 0.8) {
       triggerGameOver();
+      return;
+    }
+
+    if (mode === "swoop" && mesh.position.y <= -2.4) {
+      mesh.position.y = 2.5;
+      setMode("patrol");
+      setCooldown(
+        SEAGULL_SWEEP_INTERVAL[0] + Math.random() * (SEAGULL_SWEEP_INTERVAL[1] - SEAGULL_SWEEP_INTERVAL[0])
+      );
     }
   });
 
