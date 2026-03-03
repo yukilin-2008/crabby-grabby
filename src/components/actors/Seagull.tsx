@@ -6,7 +6,7 @@ import { LEVEL_WIDTH, SEAGULL_FIRST_DELAY, SEAGULL_SWEEP_INTERVAL } from "@/lib/
 
 export function Seagull() {
   const meshRef = useRef<Mesh>(null);
-  const { crabX, triggerGameOver, gameState } = useGameStore();
+  const { crabX, registerHit, gameState } = useGameStore();
   const [mode, setMode] = useState<"patrol" | "swoop">("patrol");
   const [timer, setTimer] = useState(0);
   const [targetX, setTargetX] = useState(0);
@@ -50,7 +50,16 @@ export function Seagull() {
     const crabY = -2.5;
     const distance = Math.hypot(mesh.position.x - crabX, mesh.position.y - crabY);
     if (distance < 0.8) {
-      triggerGameOver();
+      const lostAll = registerHit();
+      if (lostAll) {
+        return;
+      }
+      mesh.position.set(0, 2.5, 0);
+      setMode("patrol");
+      setTimer(0);
+      setCooldown(
+        SEAGULL_SWEEP_INTERVAL[0] + Math.random() * (SEAGULL_SWEEP_INTERVAL[1] - SEAGULL_SWEEP_INTERVAL[0])
+      );
       return;
     }
 

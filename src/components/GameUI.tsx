@@ -45,7 +45,7 @@ export function GameUI({ state }: Props) {
           ))}
         </div>
       </div>
-      {state !== "playing" && (
+      {(state === "won" || (state === "lost" && lives === 0)) && (
         <div className={styles.banner}>
           <h2>{state === "won" ? "LEVEL COMPLETE" : "GAME OVER"}</h2>
           {state === "lost" && <p>You lost all collected stars.</p>}
