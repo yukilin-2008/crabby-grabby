@@ -1,5 +1,5 @@
 import { useFrame } from "@react-three/fiber";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Group } from "three";
 import { useGameStore } from "@/store/gameStore";
 import { STAR_FALL_BASE_SPEED, STAR_SPAWN_INTERVAL, LEVEL_WIDTH } from "@/lib/constants";
@@ -12,6 +12,13 @@ export function SkystarField() {
   const groupRef = useRef<Group>(null);
   const [stars, setStars] = useState<Star[]>([]);
   const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    if (gameState === "playing") {
+      setStars([]);
+      setTimer(0);
+    }
+  }, [gameState]);
 
   useFrame((_, delta) => {
     if (gameState !== "playing") return;

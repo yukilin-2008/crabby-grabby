@@ -1,5 +1,5 @@
 import { useFrame } from "@react-three/fiber";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Mesh } from "three";
 import { useGameStore } from "@/store/gameStore";
 import { LEVEL_WIDTH, SEAGULL_FIRST_DELAY, SEAGULL_SWEEP_INTERVAL } from "@/lib/constants";
@@ -11,6 +11,20 @@ export function Seagull() {
   const [timer, setTimer] = useState(0);
   const [targetX, setTargetX] = useState(0);
   const [cooldown, setCooldown] = useState(SEAGULL_FIRST_DELAY);
+
+  useEffect(() => {
+    if (gameState === "playing") {
+      requestAnimationFrame(() => {
+        setMode("patrol");
+        setTimer(0);
+        setCooldown(SEAGULL_FIRST_DELAY);
+        setTargetX(0);
+        if (meshRef.current) {
+          meshRef.current.position.set(0, 2.5, 0);
+        }
+      });
+    }
+  }, [gameState]);
 
   useFrame((_, delta) => {
     if (gameState !== "playing") return;
