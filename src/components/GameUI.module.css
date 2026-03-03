@@ -15,6 +15,7 @@
 }
 
 .banner {
+  pointer-events: auto;
   position: absolute;
   inset: 0;
   display: flex;
@@ -30,4 +31,21 @@
 .banner p {
   font-size: 16px;
   margin-top: 8px;
+}
+
+
+.banner button {
+  margin-top: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #0a1f44;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.banner button:hover {
+  background: #ffffff;
 }

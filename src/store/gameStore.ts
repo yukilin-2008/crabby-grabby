@@ -8,10 +8,12 @@ type GameStore = {
   crabX: number;
   inputDirection: Direction;
   starsCollected: number;
+  lives: number;
   gameState: GameState;
   setInputDirection: (dir: Direction) => void;
   setCrabPosition: (x: number) => void;
   collectStar: () => void;
+  triggerGameOver: () => void;
   setGameState: (state: GameState) => void;
   reset: () => void;
 };
@@ -20,6 +22,7 @@ export const useGameStore = create<GameStore>((set) => ({
   crabX: 0,
   inputDirection: 0,
   starsCollected: 0,
+  lives: 3,
   gameState: "playing",
   setInputDirection: (dir) => set({ inputDirection: dir }),
   setCrabPosition: (x) => set({ crabX: x }),
@@ -33,7 +36,8 @@ export const useGameStore = create<GameStore>((set) => ({
         gameState: total >= STAR_TARGET ? "won" : "playing",
       };
     }),
+  triggerGameOver: () => set({ gameState: "lost", starsCollected: 0 }),
   setGameState: (gameState) => set({ gameState }),
   reset: () =>
-    set({ crabX: 0, inputDirection: 0, starsCollected: 0, gameState: "playing" }),
+    set({ crabX: 0, inputDirection: 0, starsCollected: 0, lives: 3, gameState: "playing" }),
 }));

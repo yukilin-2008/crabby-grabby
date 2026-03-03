@@ -41,7 +41,8 @@ export function GameUI({ state }: Props) {
       {state !== "playing" && (
         <div className={styles.banner}>
           <h2>{state === "won" ? "LEVEL COMPLETE" : "GAME OVER"}</h2>
-          <p>Press R to restart</p>
+          {state === "lost" && <p>You lost all collected stars.</p>}
+          <button type="button" onClick={reset}>Restart</button>
         </div>
       )}
     </div>
