@@ -14,6 +14,7 @@ type GameStore = {
   setCrabPosition: (x: number) => void;
   collectStar: () => void;
   triggerGameOver: () => void;
+  registerHit: () => boolean;
   setGameState: (state: GameState) => void;
   reset: () => void;
 };
@@ -36,7 +37,22 @@ export const useGameStore = create<GameStore>((set) => ({
         gameState: total >= STAR_TARGET ? "won" : "playing",
       };
     }),
-  triggerGameOver: () => set({ gameState: "lost", starsCollected: 0 }),
+  triggerGameOver: () => set({ gameState: "lost", starsCollected: 0, lives: 0 }),
+  registerHit: () => {
+    let didLose = false;
+    set((state) => {
+      if (state.gameState !== "playing") return state;
+      const remaining = state.lives - 1;
+      didLose = remaining <= 0;
+      return {
+        ...state,
+        lives: Math.max(0, remaining),
+        starsCollected: 0,
+        gameState: didLose ? "lost" : state.gameState,
+      };
+    });
+    return didLose;
+  },
   setGameState: (gameState) => set({ gameState }),
   reset: () =>
     set({ crabX: 0, inputDirection: 0, starsCollected: 0, lives: 3, gameState: "playing" }),

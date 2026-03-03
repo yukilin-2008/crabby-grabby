@@ -1,9 +1,18 @@
 .hud {
+  pointer-events: none;
   position: absolute;
   inset: 0;
   pointer-events: none;
   font-family: "Space Grotesk", system-ui, sans-serif;
   color: #0a1f44;
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 24px;
 }
 
 .counter {
@@ -12,6 +21,12 @@
   left: 24px;
   font-size: 24px;
   font-weight: 700;
+}
+
+.lives {
+  font-size: 24px;
+  gap: 8px;
+  display: flex;
 }
 
 .banner {
@@ -35,6 +50,7 @@
 
 
 .banner button {
+  pointer-events: auto;
   margin-top: 16px;
   padding: 10px 20px;
   border: none;

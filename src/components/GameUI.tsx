@@ -8,7 +8,7 @@ type Props = {
 };
 
 export function GameUI({ state }: Props) {
-  const { starsCollected, setInputDirection, reset } = useGameStore();
+  const { starsCollected, setInputDirection, reset, lives } = useGameStore();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -37,7 +37,14 @@ export function GameUI({ state }: Props) {
 
   return (
     <div className={styles.hud}>
-      <div className={styles.counter}>⭐ {starsCollected} / {STAR_TARGET}</div>
+      <div className={styles.topRow}>
+        <div className={styles.counter}>⭐ {starsCollected} / {STAR_TARGET}</div>
+        <div className={styles.lives}>
+          {Array.from({ length: lives }).map((_, idx) => (
+            <span key={idx}>🦀</span>
+          ))}
+        </div>
+      </div>
       {state !== "playing" && (
         <div className={styles.banner}>
           <h2>{state === "won" ? "LEVEL COMPLETE" : "GAME OVER"}</h2>
