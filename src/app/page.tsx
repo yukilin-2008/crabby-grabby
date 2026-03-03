@@ -1,66 +1,46 @@
-import Image from "next/image";
+"use client";
+
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, Stars as DreiStars } from "@react-three/drei";
+import { useMemo } from "react";
+import { GameUI } from "@/components/GameUI";
+import { Crab } from "@/components/actors/Crab";
+import { SkystarField } from "@/components/actors/SkystarField";
+import { Seagull } from "@/components/actors/Seagull";
+import { OceanPlane } from "@/components/environment/OceanPlane";
+import { SkyBackdrop } from "@/components/environment/SkyBackdrop";
+import { useGameStore } from "@/store/gameStore";
 import styles from "./page.module.css";
 
 export default function Home() {
+  const { gameState } = useGameStore();
+
+  const cameraPosition = useMemo(() => [0, 3, 14] as [number, number, number], []);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className={styles.wrapper}>
+      <Canvas camera={{ position: cameraPosition, fov: 55 }} shadows>
+        <color attach="background" args={["#78c1ff"]} />
+        <ambientLight intensity={0.6} />
+        <directionalLight
+          castShadow
+          position={[10, 15, 5]}
+          intensity={1.4}
+          shadow-mapSize-width={1024}
+          shadow-mapSize-height={1024}
         />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+        <SkyBackdrop />
+        <DreiStars depth={30} count={2000} factor={4} fade speed={2} />
+        <OceanPlane />
+        <SkystarField />
+        <Crab />
+        <Seagull />
+
+        {process.env.NODE_ENV === "development" && <OrbitControls enableZoom={false} />}
+      </Canvas>
+
+      <GameUI state={gameState} />
     </div>
   );
 }
