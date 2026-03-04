@@ -24,9 +24,11 @@ export function Seagull() {
   const lastXRef = useRef(0);
   const desiredYawRef = useRef(0);
   const patrolDirectionRef = useRef<1 | -1>(1);
+  const resetLockRef = useRef(false);
 
   useEffect(() => {
     if (gameState === "playing") {
+      resetLockRef.current = true;
       requestAnimationFrame(() => {
         setMode("patrol");
         setTimer(0);
@@ -39,6 +41,7 @@ export function Seagull() {
         lastXRef.current = 0;
         desiredYawRef.current = 0;
         patrolDirectionRef.current = 1;
+        resetLockRef.current = false;
       });
     }
   }, [gameState, sessionId]);
@@ -101,6 +104,10 @@ export function Seagull() {
     const crabY = -2.5;
 
     if (mode === "swoop") {
+      if (resetLockRef.current) {
+        return;
+      }
+
       const distance = Math.hypot(mesh.position.x - crabX, mesh.position.y - crabY);
       if (distance < 0.8) {
         const lostAll = registerHit();
