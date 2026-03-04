@@ -40,7 +40,7 @@ export function GameUI() {
   const showBanner = gameState === "won" || (gameState === "lost" && lives === 0);
 
   return (
-    <div className={styles.hud}>
+    <div className={styles.hud} style={{ pointerEvents: showBanner ? "auto" : "none" }}>
       <div className={styles.topRow}>
         <div className={styles.counter}>⭐ {starsCollected} / {STAR_TARGET}</div>
         <div className={styles.lives}>
