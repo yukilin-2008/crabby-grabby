@@ -99,23 +99,26 @@ export function Seagull() {
     lastXRef.current = mesh.position.x;
 
     const crabY = -2.5;
-    const distance = Math.hypot(mesh.position.x - crabX, mesh.position.y - crabY);
-    if (distance < 0.8) {
-      const lostAll = registerHit();
-      if (lostAll) {
+
+    if (mode === "swoop") {
+      const distance = Math.hypot(mesh.position.x - crabX, mesh.position.y - crabY);
+      if (distance < 0.8) {
+        const lostAll = registerHit();
+        if (lostAll) {
+          return;
+        }
+        mesh.position.y = crabY;
+        setMode("climb");
+        setTimer(0);
+        setCooldown(
+          SEAGULL_SWEEP_INTERVAL[0] + Math.random() * (SEAGULL_SWEEP_INTERVAL[1] - SEAGULL_SWEEP_INTERVAL[0])
+        );
         return;
       }
-      mesh.position.set(0, 2.5, 0);
-      setMode("patrol");
-      setTimer(0);
-      setCooldown(
-        SEAGULL_SWEEP_INTERVAL[0] + Math.random() * (SEAGULL_SWEEP_INTERVAL[1] - SEAGULL_SWEEP_INTERVAL[0])
-      );
-      return;
-    }
 
-    if (mode === "swoop" && mesh.position.y <= -2.4) {
-      setMode("climb");
+      if (mesh.position.y <= -2.4) {
+        setMode("climb");
+      }
     }
   });
 
