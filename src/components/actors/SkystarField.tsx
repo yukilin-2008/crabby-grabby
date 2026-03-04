@@ -8,7 +8,7 @@ import { Star } from "@/lib/types";
 let starId = 0;
 
 export function SkystarField() {
-  const { crabX, collectStar, gameState } = useGameStore();
+  const { crabX, collectStar, gameState, sessionId } = useGameStore();
   const groupRef = useRef<Group>(null);
   const [stars, setStars] = useState<Star[]>([]);
   const [timer, setTimer] = useState(0);
@@ -18,7 +18,7 @@ export function SkystarField() {
       setStars([]);
       setTimer(0);
     }
-  }, [gameState]);
+  }, [gameState, sessionId]);
 
   useFrame((_, delta) => {
     if (gameState !== "playing") return;

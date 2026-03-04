@@ -1,14 +1,16 @@
+"use client";
+
 import { useEffect } from "react";
 import { useGameStore } from "@/store/gameStore";
 import { STAR_TARGET } from "@/lib/constants";
 import styles from "./GameUI.module.css";
 
-type Props = {
-  state: "playing" | "won" | "lost";
-};
-
-export function GameUI({ state }: Props) {
-  const { starsCollected, setInputDirection, reset, lives } = useGameStore();
+export function GameUI() {
+  const starsCollected = useGameStore((state) => state.starsCollected);
+  const lives = useGameStore((state) => state.lives);
+  const gameState = useGameStore((state) => state.gameState);
+  const reset = useGameStore((state) => state.reset);
+  const setInputDirection = useGameStore((state) => state.setInputDirection);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -35,6 +37,8 @@ export function GameUI({ state }: Props) {
     };
   }, [reset, setInputDirection]);
 
+  const showBanner = gameState === "won" || (gameState === "lost" && lives === 0);
+
   return (
     <div className={styles.hud}>
       <div className={styles.topRow}>
@@ -45,10 +49,10 @@ export function GameUI({ state }: Props) {
           ))}
         </div>
       </div>
-      {(state === "won" || (state === "lost" && lives === 0)) && (
+      {showBanner && (
         <div className={styles.banner}>
-          <h2>{state === "won" ? "LEVEL COMPLETE" : "GAME OVER"}</h2>
-          {state === "lost" && <p>You lost all collected stars.</p>}
+          <h2>{gameState === "won" ? "LEVEL COMPLETE" : "GAME OVER"}</h2>
+          {gameState === "lost" && <p>You lost all collected stars.</p>}
           <button type="button" onClick={reset}>Restart</button>
         </div>
       )}

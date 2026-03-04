@@ -9,12 +9,9 @@ import { SkystarField } from "@/components/actors/SkystarField";
 import { Seagull } from "@/components/actors/Seagull";
 import { OceanPlane } from "@/components/environment/OceanPlane";
 import { SkyBackdrop } from "@/components/environment/SkyBackdrop";
-import { useGameStore } from "@/store/gameStore";
 import styles from "./page.module.css";
 
 export default function Home() {
-  const { gameState } = useGameStore();
-
   const cameraPosition = useMemo(() => [0, 3, 14] as [number, number, number], []);
 
   return (
@@ -40,7 +37,7 @@ export default function Home() {
         {process.env.NODE_ENV === "development" && <OrbitControls enableZoom={false} />}
       </Canvas>
 
-      <GameUI state={gameState} />
+      <GameUI />
     </div>
   );
 }

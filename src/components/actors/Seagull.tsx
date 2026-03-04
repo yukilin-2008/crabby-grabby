@@ -16,7 +16,7 @@ const PATROL_SPEED = 1.4;
 
 export function Seagull() {
   const meshRef = useRef<Group>(null);
-  const { crabX, registerHit, gameState } = useGameStore();
+  const { crabX, registerHit, gameState, sessionId } = useGameStore();
   const [mode, setMode] = useState<"patrol" | "swoop" | "climb">("patrol");
   const [timer, setTimer] = useState(0);
   const [targetX, setTargetX] = useState(0);
@@ -41,7 +41,7 @@ export function Seagull() {
         patrolDirectionRef.current = 1;
       });
     }
-  }, [gameState]);
+  }, [gameState, sessionId]);
 
   useFrame((_, delta) => {
     if (gameState !== "playing") return;
