@@ -1,8 +1,15 @@
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
-import { Group } from "three";
+import { Group, MathUtils } from "three";
 import { useGameStore } from "@/store/gameStore";
 import { LEVEL_WIDTH, SEAGULL_FIRST_DELAY, SEAGULL_SWEEP_INTERVAL } from "@/lib/constants";
+
+const TWO_PI = Math.PI * 2;
+const lerpAngle = (current: number, target: number, t: number) => {
+  const clampedT = Math.min(Math.max(t, 0), 1);
+  const delta = ((target - current + Math.PI) % TWO_PI) - Math.PI;
+  return current + delta * clampedT;
+};
 
 export function Seagull() {
   const meshRef = useRef<Group>(null);
@@ -11,6 +18,8 @@ export function Seagull() {
   const [timer, setTimer] = useState(0);
   const [targetX, setTargetX] = useState(0);
   const [cooldown, setCooldown] = useState(SEAGULL_FIRST_DELAY);
+  const lastXRef = useRef(0);
+  const desiredYawRef = useRef(0);
 
   useEffect(() => {
     if (gameState === "playing") {
@@ -21,7 +30,10 @@ export function Seagull() {
         setTargetX(0);
         if (meshRef.current) {
           meshRef.current.position.set(0, 2.5, 0);
+          meshRef.current.rotation.set(0, 0, 0);
         }
+        lastXRef.current = 0;
+        desiredYawRef.current = 0;
       });
     }
   }, [gameState]);
@@ -38,6 +50,8 @@ export function Seagull() {
 
     const mesh = meshRef.current;
     if (!mesh) return;
+
+    const previousX = lastXRef.current;
 
     if (mode === "patrol") {
       mesh.position.y = 2.5;
@@ -56,6 +70,22 @@ export function Seagull() {
         );
       }
     }
+
+    const deltaXPos = mesh.position.x - previousX;
+    if (deltaXPos > 0.01) {
+      desiredYawRef.current = 0;
+    } else if (deltaXPos < -0.01) {
+      desiredYawRef.current = Math.PI;
+    }
+
+    const yawLerp = 1 - Math.exp(-delta * 10);
+    mesh.rotation.y = lerpAngle(mesh.rotation.y, desiredYawRef.current, yawLerp);
+
+    const rollTarget = Math.max(-0.35, Math.min(0.35, -deltaXPos * 0.4));
+    const rollLerp = 1 - Math.exp(-delta * 12);
+    mesh.rotation.z = MathUtils.lerp(mesh.rotation.z, rollTarget, rollLerp);
+
+    lastXRef.current = mesh.position.x;
 
     const crabY = -2.5;
     const distance = Math.hypot(mesh.position.x - crabX, mesh.position.y - crabY);
