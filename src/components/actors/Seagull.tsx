@@ -11,6 +11,9 @@ const lerpAngle = (current: number, target: number, t: number) => {
   return current + delta * clampedT;
 };
 
+const PATROL_BOUNDS = LEVEL_WIDTH / 2 - 1;
+const PATROL_SPEED = 1.4;
+
 export function Seagull() {
   const meshRef = useRef<Group>(null);
   const { crabX, registerHit, gameState } = useGameStore();
@@ -20,6 +23,7 @@ export function Seagull() {
   const [cooldown, setCooldown] = useState(SEAGULL_FIRST_DELAY);
   const lastXRef = useRef(0);
   const desiredYawRef = useRef(0);
+  const patrolDirectionRef = useRef<1 | -1>(1);
 
   useEffect(() => {
     if (gameState === "playing") {
@@ -34,6 +38,7 @@ export function Seagull() {
         }
         lastXRef.current = 0;
         desiredYawRef.current = 0;
+        patrolDirectionRef.current = 1;
       });
     }
   }, [gameState]);
@@ -55,13 +60,19 @@ export function Seagull() {
 
     if (mode === "patrol") {
       mesh.position.y = 2.5;
-      mesh.position.x = Math.sin(Date.now() * 0.0005) * (LEVEL_WIDTH / 2 - 1);
+      mesh.position.x += patrolDirectionRef.current * PATROL_SPEED * delta;
+      if (mesh.position.x >= PATROL_BOUNDS) {
+        mesh.position.x = PATROL_BOUNDS;
+        patrolDirectionRef.current = -1;
+      } else if (mesh.position.x <= -PATROL_BOUNDS) {
+        mesh.position.x = -PATROL_BOUNDS;
+        patrolDirectionRef.current = 1;
+      }
     } else if (mode === "swoop") {
       mesh.position.y -= delta * 4;
       mesh.position.x += (targetX - mesh.position.x) * delta * 2;
     } else if (mode === "climb") {
       mesh.position.y += delta * 3;
-      mesh.position.x += (0 - mesh.position.x) * delta;
       if (mesh.position.y >= 2.5) {
         mesh.position.y = 2.5;
         setMode("patrol");
